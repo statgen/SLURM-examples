@@ -10,13 +10,13 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
 
 ## Jobs that use multiple cores on one node
 
-If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node, causing all of its jobs to struggle.  That is bad.
-
 Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
 - parallel make i.e. `make -j` (e.g. EPACTS)
 - programs that use OpenMP
 - programs that use pthreads
+
+If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that.
 
 SLURM options for multi-threaded programs:
 - `--cpus-per-task`: the number of cores each job will use (defaults to 1)
