@@ -20,8 +20,8 @@ Some common multi-threaded jobs are:
 
 There are three main SLURM options for multi-threaded programs:
 
-* `--ntasks`: the number of nodes to use (choose 1 unless using MPI)
-* `--cpus-per-task`: the number of cores to use on each node (defaults to 1)
+* `--ntasks`: the number of processes that program will launch (choose 1 unless using MPI)
+* `--cpus-per-task`: the number of cores that process will use (defaults to 1)
 * `--mem`: the amount of memory per node, in MB.
 
 `sbatch --ntasks=1 --cpus-per-task=8 --mem=32000` will allocate 8 CPUs (cores) on a single node for a program that uses 8 threads and 32GB of RAM (4GB per thread).
