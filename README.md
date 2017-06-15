@@ -22,8 +22,8 @@ There are three main SLURM options for multi-threaded programs:
 
 * `--ntasks`: the number of processes that program will launch (choose 1 unless using MPI)
 * `--cpus-per-task`: the number of cores each process will use (defaults to 1)
-* `--mem-per-cpu`: the amount of memory per core, in MB.
+* `--mem-per-cpu`: the amount of memory per core, in MB (or add `G` for GB).
 
-`sbatch --ntasks=1 --cpus-per-task=8 --mem-per-cpu=4000` will allocate 8 CPUs (cores) on a single node for a program that uses 8 threads and 32GB of RAM (4GB per thread).
+`sbatch --ntasks=1 --cpus-per-task=8 --mem-per-cpu=4G` will allocate 8 CPUs (cores) on a single node for a program that uses 8 threads and 32GB of RAM (4GB per thread).
 
 When using multi-threaded linear algebra libraries, you may need to additionally restrict the number of threads using environment variables such as `OMP_NUM_THREADS`. Please, spend some time reading documentation of the specific library you are using to understand what environment variables need to be changed.
