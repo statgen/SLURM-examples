@@ -7,9 +7,10 @@ If you want to share your SLURM script, then it is your responsibility to ensure
 
 Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users.
 
+## Submitting jobs
 
-## Simple jobs from command line
-Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --wrap="Rscript /net/wonderland/home/foo/myscript.R > x.txt" --output=myjob.slurm.log`.
+#### A simple job from the command line
+Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"`.
 - `--partition=<partition name>` (Default is `nomosix`)
     - Use `scontrol show partitions | less` to see a list of available partitions.
 - `--job-name=<job name>`: A name for the job. (Default is a random number) 
@@ -17,10 +18,26 @@ Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G -
 - `--mem` can use `G` for GB or `M` for MB. (default is `2G`)
 - `--output=<filename>`: where to write STDOUT and STDERR (default is `slurm-<job_id>.out`)
 
-## Jobs in shell scripts
-*TODO*
+#### A simple job from a bash script
+```
+sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"
+```
+is equivalent to 
+```
+sbatch myscript.sh
+```
+if `myscript.sh` contains:
+```
+#!/bin/bash
+#SBATCH --partition=nomosix
+#SBATCH --job-name=myjob
+#SBATCH --mem=4G
+#SBATCH --time=5-0:0
+#SBATCH --output=myjob.slurm.log
+Rscript /net/wonderland/home/foo/myscript.R
+```
 
-## Jobs that use multiple cores (on a single machine)
+#### A job that use multiple cores (on a single machine)
 Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
     - `R` on our cluster can use multiple threads for algebra if you set the environment variable `export OMP_NUM_THREADS=8` (or whatever other value).
@@ -42,7 +59,7 @@ Making your job use the correct number of threads:
 - When using parallel make, set `make -j <number_of_cores>`.
 
 
-## Jobs that use multiple nodes (ie, MPI)
+#### Jobs that use multiple nodes (ie, MPI)
 
 MPI can use multiple cores across different nodes, so it can be scheduled differently than single-node multi-threaded jobs.
 
@@ -55,8 +72,10 @@ There are three main SLURM options for multi-threaded programs:
 eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocate 8 CPUs (cores), which can be on different nodes.  Each will have 4GB of RAM, for a total of 32GB.
 
 
-## Running many jobs
+#### Running many jobs
 *TODO*
+
+
 
 ## Monitoring jobs
 
