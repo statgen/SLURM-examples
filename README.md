@@ -62,7 +62,7 @@ Making your job use the correct number of threads:
 - When using parallel make, set `make -j <number_of_cores>`.
 
 
-### Jobs that use multiple nodes (ie, MPI)
+### A job that use multiple nodes (ie, MPI)
 
 MPI can use multiple cores across different nodes, so it can be scheduled differently than single-node multi-threaded jobs.
 
