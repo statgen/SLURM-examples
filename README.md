@@ -59,17 +59,18 @@ eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocat
 
 ## Monitoring jobs
 
-There two most important commands for monitoring your job status are `squeue` and `scontrol show job`.
+Two most important commands for monitoring your job status are `squeue` and `scontrol show job`.
 
 - `squeue -u <user name`. Shows  all your jobs that are in the SLURM queue.
 - `squeue -u <user name> -p <partition name>`. Shows all your jobs that are in the specific partition (in case you used multiple) in the SLURM queue.
 
-- `scontrol show job <job id>`. Shows all information about specific SLURM job. It is worth paying attention to the following information:
-    - *Requeue*. Shows how many times your job was requeued. Some jobs may have higher priority and may preempt (i.e. cancel) your running jobs and put them back to the queue. If you think that your job takes too long time and the *Requeue* is greater than 1 then, most probablym the reason why your job takes so long time is because it was cancelled and requeued.
+- `scontrol show job -dd <job id>`. Shows all information about specific SLURM job. It is worth paying attention to the following information:
+    - *Requeue*. Shows how many times your job was requeued. Some jobs may have higher priority and may preempt (i.e. cancel) your running jobs and put them back to the queue. If your job takes too long time and the *Requeue* is greater than 1 then, most probably, the reason why your job takes so long is because it was cancelled and requeued several time.
     - *TimeLimit*. Shows time limit of your job.
     - *Command*. The SLURM script that was executed. If you were using `sbatch --wrap`, then this field will be empty.
     - *StdErr*. File were STDERR is written. 
     - *StdOut*. File were STDOUT is written.
+    - *BatchScript*. Thes command that was executed. This field will list command from `sbatch --wrap`, and will be empty if script was used (see *Command*).
 
 
 ## FAQ
