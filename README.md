@@ -10,11 +10,12 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
 
 ## Simple jobs from command line
 Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --wrap="Rscript /net/wonderland/home/foo/myscript.R > x.txt" --output=myjob.slurm.log`.
-- `--partition=<partition name>` (Optional) Default is nomosix. Use `scontrol show partitions` to see a list of available partitions.
-- `--job-name=<job name>` (Optional) Try to give a short name.
-- `--time=<days>-<hours>:<minutes>` (Optional) Default job time limit is 25 hours.
-- `--mem` can use `G` for GB or `M` for MB
-- `--output=<slurm log file>` (Optional) If not specified, STDOUT and STDERR will be written to `slurm-<job_id>.out`
+- `--partition=<partition name>` (Default is `nomosix`)
+    - Use `scontrol show partitions | less` to see a list of available partitions.
+- `--job-name=<job name>`: A name for the job. (Default is a random number) 
+- `--time=<days>-<hours>:<minutes>`: time limit, after which the job will be killed. (Default is 25 hours)
+- `--mem` can use `G` for GB or `M` for MB. (default is `2G`)
+- `--output=<filename>`: where to write STDOUT and STDERR (default is `slurm-<job_id>.out`)
 
 ## Jobs in shell scripts
 *TODO*
