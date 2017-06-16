@@ -8,22 +8,28 @@ If you want to share your SLURM script, then it is your responsibility to ensure
 Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users. 
 
 
-## Jobs that use multiple cores on one node
+## Simple jobs
+Just run a command like: `sbatch --mem=4G --time=5-0:0 --wrap="Rscript /net/wonderland/home/foo/myscript.R > x.txt"`.
+- `--time=<days>-<hours>:<minutes>`
+- `--mem` can use `G` for GB or `M` for MB
+- STDOUT and STDERR will be written to `slurm-<job_id>.out` (though in this example, due to `> x.txt` there shouldn't be any)
 
+
+## Jobs that use multiple cores (on a single machine)
 Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
-- parallel make i.e. `make -j` (e.g. EPACTS)
+    - `R` on our cluster can use multiple threads for algebra if you set the environment variable `OMP_NUM_THREADS=8` (or whatever other value).
+- parallel make i.e. `make -j` (e.g. EPACTS, Gotcloud)
 - programs that use OpenMP
 - programs that use pthreads
 
 If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that.
 
 SLURM options for multi-threaded programs:
-- `--nodes=1-1`: require all cores to be allocated on the same computer
-- `--cpus-per-task`: the number of cores each job will use (defaults to 1)
+- `--cpus-per-task`: the number of cores your job will use (defaults to 1)
 - `--mem`: the total amount of memory, in MB (or add `G` for GB).
 
-eg, `sbatch --nodes=1-1 --cpus-per-task=8 --mem=32G myjob.sh` will allocate 8 CPUs (cores) on a single node with 32GB of RAM (4GB per thread) for a program named `myjob.sh`.
+eg, `sbatch --cpus-per-task=8 --mem=32G myjob.sh` will allocate 8 CPUs (cores) on a single node with 32GB of RAM (4GB per thread) for a program named `myjob.sh`.
 
 Making your job use the correct number of threads:
 - When using multi-threaded linear algebra libraries, you may need to additionally restrict the number of threads using environment variables such as `OMP_NUM_THREADS`. Please, spend some time reading documentation of the specific library you are using to understand what environment variables need to be changed.
@@ -36,8 +42,12 @@ MPI can use multiple cores across different nodes, so it can be scheduled differ
 
 There are three main SLURM options for multi-threaded programs:
 
-* `--ntasks`: the number of processes that the program will launch
-* `--cpus-per-task`: the number of cores each process will use (defaults to 1)
+* `--ntasks`: the number of processes that the program will launch (defaults to 1).
+* `--cpus-per-task`: the number of cores each process will use (defaults to 1).
 * `--mem-per-cpu`: the amount of memory per core, in MB (or add `G` for GB).
 
 eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocate 8 CPUs (cores), which can be on different nodes.  Each will have 4GB of RAM, for a total of 32GB.
+
+
+## Running many jobs
+*TODO*
