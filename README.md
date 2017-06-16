@@ -45,7 +45,7 @@ Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
     - `R` on our cluster can use multiple threads for algebra if you set the environment variable `export OMP_NUM_THREADS=8` (or whatever other value).
     - In case you are not sure if your program is using multi-threaded linear algebra libraries, then execute `ldd <program path>`. The multi-threaded programs will have at least one of the following listed (or very similar): *libpthread, libblas, libgomp, libmkl, libatlas*.
-- parallel make i.e. `make -j` (e.g. EPACTS, GotCloud)
+- parallel make i.e. `make -j` (e.g. EPACTS)
 - programs that use OpenMP
 - programs that use pthreads
 
