@@ -10,7 +10,10 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
 ## Submitting jobs
 
 #### A simple job from the command line
-Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"`.
+Just run a command like: 
+```
+sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"
+```
 - `--partition=<partition name>` (Default is `nomosix`)
     - Use `scontrol show partitions | less` to see a list of available partitions.
 - `--job-name=<job name>`: A name for the job. (Default is a random number) 
@@ -74,7 +77,6 @@ eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocat
 
 #### Running many jobs
 *TODO*
-
 
 
 ## Monitoring jobs
