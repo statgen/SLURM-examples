@@ -8,17 +8,22 @@ If you want to share your SLURM script, then it is your responsibility to ensure
 Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users. 
 
 
-## Simple jobs
-Just run a command like: `sbatch --mem=4G --time=5-0:0 --wrap="Rscript /net/wonderland/home/foo/myscript.R > x.txt"`.
-- `--time=<days>-<hours>:<minutes>`
+## Simple jobs from command line
+Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --wrap="Rscript /net/wonderland/home/foo/myscript.R > x.txt" --output=myjob.slurm.log`.
+- `--partition=<partition name>` (Optional) Default is nomosix. Use `scontrol show partitions` to see a list of available partitions.
+- `--job-name=<job name>` (Optional) Try to give a short name.
+- `--time=<days>-<hours>:<minutes>` (Optional) Default job time limit is 25 hours.
 - `--mem` can use `G` for GB or `M` for MB
-- STDOUT and STDERR will be written to `slurm-<job_id>.out` (though in this example, due to `> x.txt` there shouldn't be any)
+- `--output=<slurm log file>` (Optional) If not specified, STDOUT and STDERR will be written to `slurm-<job_id>.out`
 
+## Jobs in shell scripts
+*TODO*
 
 ## Jobs that use multiple cores (on a single machine)
 Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
     - `R` on our cluster can use multiple threads for algebra if you set the environment variable `OMP_NUM_THREADS=8` (or whatever other value).
+    - In case you are not sure if your program is using multi-threaded linear algebra libraries, then execute `ldd <program path>`. The multi-threaded programs will have at least one of the following listed (or very similar): *libpthread, libblas, libgomp, libmkl, libatlas*.
 - parallel make i.e. `make -j` (e.g. EPACTS, Gotcloud)
 - programs that use OpenMP
 - programs that use pthreads
@@ -51,3 +56,8 @@ eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocat
 
 ## Running many jobs
 *TODO*
+
+## FAQ
+
+1. *My job is close to its time limit. How can I extend it?*
+Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. New time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please, do this at least one day before the time limit expires).
