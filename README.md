@@ -5,7 +5,7 @@ Students, visitors and stuff members are welcomed to use scripts from this repos
 
 If you want to share your SLURM script, then it is your responsibility to ensure that the script works and correctly allocates cluster resources.
 
-Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users. 
+Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users.
 
 
 ## Simple jobs from command line
@@ -23,17 +23,17 @@ Just run a command like: `sbatch --partition=nomosix --job-name=myjob --mem=4G -
 ## Jobs that use multiple cores (on a single machine)
 Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
-    - `R` on our cluster can use multiple threads for algebra if you set the environment variable `OMP_NUM_THREADS=8` (or whatever other value).
+    - `R` on our cluster can use multiple threads for algebra if you set the environment variable `export OMP_NUM_THREADS=8` (or whatever other value).
     - In case you are not sure if your program is using multi-threaded linear algebra libraries, then execute `ldd <program path>`. The multi-threaded programs will have at least one of the following listed (or very similar): *libpthread, libblas, libgomp, libmkl, libatlas*.
-- parallel make i.e. `make -j` (e.g. EPACTS, Gotcloud)
+- parallel make i.e. `make -j` (e.g. EPACTS, GotCloud)
 - programs that use OpenMP
 - programs that use pthreads
 
 If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that.
 
 SLURM options for multi-threaded programs:
-- `--cpus-per-task`: the number of cores your job will use (defaults to 1)
-- `--mem`: the total amount of memory, in MB (or add `G` for GB).
+- `--cpus-per-task`: the number of cores your job will use (default is 1)
+- all the options listed above.
 
 eg, `sbatch --cpus-per-task=8 --mem=32G myjob.sh` will allocate 8 CPUs (cores) on a single node with 32GB of RAM (4GB per thread) for a program named `myjob.sh`.
 
@@ -78,3 +78,7 @@ Two most important commands for monitoring your job status are `squeue` and `sco
 
 1. *My job is close to its time limit. How can I extend it?*
 Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. New time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please, do this at least one day before the time limit expires).
+
+2. *What are these terms?*
+    - node = machine = computer
+    - number of threads ≈ number of cores ≈ number of cpus
