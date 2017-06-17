@@ -98,6 +98,15 @@ Two most important commands for monitoring your job status are `squeue` and `sco
     - *StdOut*. File where STDOUT is written.
     - *BatchScript*. The command that was executed. (only for `sbatch --wrap="script.sh args..."`)
 
+## Canceling jobs
+
+Job can be cancelled with `scancel`.
+
+- `scancel <jobid>`. Cancels your job with provided identifier.
+- `scancel -u <username>`. Cancels all jobs your jobs.
+- `scancel -u <username> -p <partition>`. Cancels all your jobs in the specified partition.
+- `scancel --state=PENDING -u <username>`. Cancels all your jobs that are pending (i.e. not running and waiting in the queue).
+
 
 ## FAQ
 
