@@ -45,7 +45,7 @@ if `myscript.sh` contains:
 Rscript /net/wonderland/home/foo/myscript.R
 ```
 
-:exclamation: _Bash script size must be less than 4MB. If you have large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it._ 
+:frog: _Bash script size must be less than 4MB. If you have large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it. Quack quack_ 
 
 
 ### A job that use multiple cores (on a single machine)
@@ -57,7 +57,7 @@ Some common single-node multi-threaded jobs:
 - programs that use OpenMP
 - programs that use pthreads
 
-:exclamation: _If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that._
+:frog: _If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that. Quack quack_
 
 SLURM options for multi-threaded programs:
 - `--cpus-per-task`: the number of cores your job will use (default is 1)
