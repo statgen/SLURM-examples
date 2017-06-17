@@ -45,6 +45,9 @@ if `myscript.sh` contains:
 Rscript /net/wonderland/home/foo/myscript.R
 ```
 
+:exclamation: _Bash script size must be less than 4MB. If you have large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it._ 
+
+
 ### A job that use multiple cores (on a single machine)
 Some common single-node multi-threaded jobs:
 - programs that use multi-threaded linear algebra libraries (MKL, BLAS, ATLAS, etc.)
@@ -54,7 +57,7 @@ Some common single-node multi-threaded jobs:
 - programs that use OpenMP
 - programs that use pthreads
 
-If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that.
+:exclamation: If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that.
 
 SLURM options for multi-threaded programs:
 - `--cpus-per-task`: the number of cores your job will use (default is 1)
@@ -71,7 +74,7 @@ Making your job use the correct number of threads:
 
 MPI can use multiple cores across different nodes, so it can be scheduled differently than single-node multi-threaded jobs.
 
-There are three main SLURM options for multi-threaded programs:
+There are three main SLURM options for multi-process/multi-threaded programs:
 
 * `--ntasks`: the number of processes that the program will launch (defaults to 1).
 * `--cpus-per-task`: the number of cores each process will use (defaults to 1).
