@@ -100,7 +100,7 @@ Two most important commands for monitoring your job status are `squeue` and `sco
 
 ## Canceling jobs
 
-Job can be cancelled with `scancel`.
+To cancel a job use `scancel`:
 
 - `scancel <jobid>`. Cancels your job with provided identifier.
 - `scancel -u <username>`. Cancels all jobs your jobs.
