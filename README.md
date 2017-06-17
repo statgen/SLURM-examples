@@ -57,7 +57,7 @@ Some common single-node multi-threaded jobs:
 - programs that use OpenMP
 - programs that use pthreads
 
-:exclamation: If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that.
+:exclamation: _If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that._
 
 SLURM options for multi-threaded programs:
 - `--cpus-per-task`: the number of cores your job will use (default is 1)
