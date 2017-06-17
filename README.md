@@ -83,6 +83,22 @@ There are three main SLURM options for multi-process/multi-threaded programs:
 eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocate 8 CPUs (cores), which can be on different nodes.  Each will have 4GB of RAM, for a total of 32GB.
 
 
+### Many jobs
+
+The best and recommended way to submit many jobs (>100) is using SLURM's jobs array feature. The job arrays allow managing big number of jobs more effectively and faster. 
+
+To specify job array use `--array` as follows:
+
+1. Tell SLURM how many jobs you will have in array:
+    - `--array=0-9`. There are 10 jobs in array. The first job has index 0, and the last job has index 9.
+    - `--array=5-8`. There are 4 jobs in array. The first job has index 5, and the last job has index 8.
+    - `--array=2,4,6`. There are 3 jobs in array with indices 2, 4 and 6.
+2. Inside your script or command, use `$SLURM_ARRAY_TASK_ID` bash variable that stores index to the current job in array. For example, `$SLURM_ARRAY_TASK_ID` can be used to specify input file for job in array (job 0 will process input_file_0.txt, job 1 will process input_file_1.txt and so on):
+```
+sbatch --array=0-9 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
+```
+
+
 ## Monitoring jobs
 
 Two most important commands for monitoring your job status are `squeue` and `scontrol show job`.
@@ -103,7 +119,7 @@ Two most important commands for monitoring your job status are `squeue` and `sco
 To cancel a job use `scancel`:
 
 - `scancel <jobid>`. Cancels your job with provided identifier.
-- `scancel -u <username>`. Cancels all jobs your jobs.
+- `scancel -u <username>`. Cancels all your jobs.
 - `scancel -u <username> -p <partition>`. Cancels all your jobs in the specified partition.
 - `scancel --state=PENDING -u <username>`. Cancels all your jobs that are pending (i.e. not running and waiting in the queue).
 
