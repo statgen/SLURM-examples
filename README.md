@@ -21,6 +21,11 @@ sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob
 - `--mem` can use `G` for GB or `M` for MB. (default is `2G`)
 - `--output=<filename>`: where to write STDOUT and STDERR (default is `slurm-<job_id>.out`)
 
+SLURM has short versions for some of its options eg:
+```
+sbatch -p nomosix -J myjob --mem=4G -t 5-0:0 -o myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"
+```
+
 ### A simple job from a bash script
 ```
 sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"
