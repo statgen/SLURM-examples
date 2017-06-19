@@ -76,7 +76,7 @@ MPI can use multiple cores across different nodes, so it can be scheduled differ
 
 There are three main SLURM options for multi-process/multi-threaded programs:
 
-* `--ntasks`: the number of processes that the program will launch (defaults to 1).
+* `--ntasks`: the number of processes that the program will launch, which can be on separate machines (defaults to 1).
 * `--cpus-per-task`: the number of cores each process will use (defaults to 1).
 * `--mem-per-cpu`: the amount of memory per core, in MB (or add `G` for GB).
 
