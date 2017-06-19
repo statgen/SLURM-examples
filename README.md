@@ -1,7 +1,7 @@
 # SLURM-examples
 
 The purpose of this repository is to collect examples of how to run SLURM jobs on CSG clusters.
-Students, visitors and stuff members are welcomed to use scripts from this repository in their work, and also contribute their own scripts.
+Students, visitors and staff members are welcome to use scripts from this repository in their work, and also contribute their own scripts.
 
 If you want to share your SLURM script, then it is your responsibility to ensure that the script works and correctly allocates cluster resources.
 
@@ -45,7 +45,7 @@ if `myscript.sh` contains:
 Rscript /net/wonderland/home/foo/myscript.R
 ```
 
-:frog: _Bash script size must be less than 4MB. If you have large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it. Quack quack_ 
+:frog: _Bash script size must be less than 4MB. If you have a large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it. Quack quack_ 
 
 
 ### A job that use multiple cores (on a single machine)
@@ -128,7 +128,7 @@ To cancel a job use `scancel`:
 
 1. *My job is close to its time limit. How can I extend it?*
 
-    Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. New time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please, do this at least one day before the time limit expires).
+    Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. The new time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please do this at least one day before the time limit expires).
 
 2. *What are these terms?*
 
