@@ -135,3 +135,7 @@ To cancel a job use `scancel`:
     node = machine = computer
 
     number of threads ≈ number of cores ≈ number of cpus
+
+3. *Where are the docs?*
+
+    [here](https://slurm.schedmd.com/sbatch.html)
