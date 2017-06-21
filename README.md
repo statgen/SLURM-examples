@@ -114,6 +114,16 @@ Two most important commands for monitoring your job status are `squeue` and `sco
     - *StdOut*. File where STDOUT is written.
     - *BatchScript*. The command that was executed. (only for `sbatch --wrap="script.sh args..."`)
 
+## Reviewing completed jobs
+
+If you are curious how long a completed job ran for or how much memory it used, you can look that information with `sacct`. For example
+
+- `sacct -S `date --date "last month" +%Y-%m-%d` -o "Submit,JobID,JobName,Partition,NCPUS,State,ExitCode,Elapsed,CPUTime,MaxRSS"` This will pull some basic stats for all the jobs you ran in the past month.
+- `sacct -l -j <job_id>` will dump all the information it has about a particular job
+- `sacct -l -P -j <job_id> | awk -F\| 'FNR==1 { for (i=1; i<=NF; i++) header[i] = $i; next } { for (i=1; i<=NF; i++) print header[i] ": " $i; print "-----"}'` same as above but expands columns to rows 
+
+For other available options, see the [sacct documentation](https://slurm.schedmd.com/sacct.html).
+
 ## Canceling jobs
 
 To cancel a job use `scancel`:
