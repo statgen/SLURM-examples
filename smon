@@ -23,9 +23,6 @@ from subprocess import check_output
 from collections import Counter
 from math import floor, ceil
 
-def dashcenter(text, length):
-    return '-'*ceil((length-len(text))/2) + text + '-'*floor((length-len(text))/2)
-
 states = 'PD R CG'.split()
 o = check_output('squeue --array --Format=username:15,statecompact:3,numcpus:5,minmemory:10'.split()).decode('ascii').rstrip('\n').split('\n')
 assert o[0] == '{:15}{:3}{:5}{:10}'.format('USER','ST','CPUS','MIN_MEMORY'), o[0]
@@ -41,17 +38,15 @@ for line in o[1:]:
         ppl.setdefault(username, {}).setdefault('cpus', Counter())[state] += ncpus
         ppl.setdefault(username, {}).setdefault('mem', Counter())[state] += mem
     except Exception as exc: raise Eception('BAD LINE: ' + repr(line)) from exc
-
-print(' '*13 + '   '.join(dashcenter(x,21) for x in ['pending','running','completing']))
-print(' '*13 + '   '.join([('{:>7}'*3).format('mem(GB)', '#cpus', '#jobs')]*3))
+print(' '*13+'-------pending-------   -------running-------   ------completing-----')
+print(' '*13+'mem(GB)  #cpus  #jobs   mem(GB)  #cpus  #jobs   mem(GB)  #cpus  #jobs')
 for username in sorted(ppl.keys(), key=lambda u: -ppl[u]['cpus']['R']):
     for state in states: ppl[username]['mem'][state] = int(ppl[username]['mem'][state])
     print('{:12}{:7}{:7}{:7}   {:7}{:7}{:7}   {:7}{:7}{:7}'.format(
         username,
-        *[ppl[username][metric][state] or '' for state in states for metric in 'mem cpus jobs'.split()]
+        *[ppl[username][metric][state] or '' for state in states for metric in ['mem','cpus','jobs']]
     ))
 print('\n')
-
 
 
 print('CPUS ON CLUSTER:')
