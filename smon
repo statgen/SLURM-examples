@@ -49,8 +49,8 @@ for username in sorted(ppl.keys(), key=lambda u: -ppl[u]['cpus']['R']):
 print('\n')
 
 
-print('CPUS ON CLUSTER:')
 o = check_output('sinfo --format=%C'.split()).decode('ascii').split('\n')
 assert o[0] == 'CPUS(A/I/O/T)'
+print('CPUS ON CLUSTER:')
 for label, ncpus in zip('allocated idle other total'.split(), [int(x) for x in o[1].split('/')]):
     print('{:>10}:{:5}'.format(label, ncpus))
