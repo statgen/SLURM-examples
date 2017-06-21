@@ -1,5 +1,24 @@
 #!/usr/bin/env python3
 
+'''
+$ smon
+             -------pending-------   -------running-------   ------completing-----
+             mem(GB)  #cpus  #jobs   mem(GB)  #cpus  #jobs   mem(GB)  #cpus  #jobs
+[username]    10690   5345   5345      2046   1023   1023
+[username]      234    480     60        64     69     27
+[username]                               19     60      5
+[username]        9      2      2        46     48     12
+[username]     1453    744    744         1      1      1        11      6      6
+[username]      114     39     39                                 2      1      1
+[username]    72186   2858   2858
+
+CPUS ON CLUSTER:
+ allocated: 3951
+      idle: 3188
+     other:  541
+     total: 7680
+'''
+
 from subprocess import check_output
 from collections import Counter
 from math import floor, ceil
