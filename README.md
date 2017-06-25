@@ -98,6 +98,11 @@ To specify job array use `--array` as follows:
 sbatch --array=0-9 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
 
+To keep track of SLURM output files, you can use `%a` when specifiyng `--output` argument. Slurm replaces `%a` with the job number in array:
+```
+sbatch --array=0-9 --output=myoutput_%a.txt --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
+```
+
 
 ## Monitoring jobs
 
