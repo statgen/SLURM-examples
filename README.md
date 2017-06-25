@@ -103,6 +103,39 @@ To keep track of SLURM output files, you can use `%a` when specifiyng `--output`
 sbatch --array=0-9 --output=myoutput_%a.txt --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
 
+### Job dependencies
+
+Often we develop pipelines where a particular job must be launched only after previous jobs were successully completed. SLURM provides a way to implement such pipelines with its `--dependency` option:
+- `--dependency=afterok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier will be successfully completed. If `job_id` is a job array, then all jobs in that job array must be successfully completed.
+- `--dependency=afternotok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier will fail. If `job_id` is a job array, then at least one job in that array must be failed. This option may be useful for cleanup step.
+
+Let's consider a pipeline with the following steps: 
+1. split input data into *N* chunks; 
+2. submit SLURM job array with  *N* jobs - one job per data chunk;
+3. merge *N* output files into single final output file. 
+
+In this example, job (3) must be launched only after all jobs in step (2) are successfully finished. 
+You can tell SLURM to automatically run job (3) after jobs in step (2) with the following bash script:
+```
+# On successfull job sumbission, SLURM prints new job identifier to standard output. We can use this job identifier to specify job dependency.
+
+# Submit your job array.  
+slurm_message=$(sbatch --array=0-9 --wrap="Rscript myscript.R chunk_$SLURM_ARRAY_TASK_ID.txt")
+
+# Extract job identifier from SLURM's message.
+if ! echo ${message} | grep -q "[1-9][0-9]*$"; then 
+   echo "Job(s) submission failed."
+   echo ${message}
+   exit 1
+else
+   job=$(echo ${message} | grep -oh "[1-9][0-9]*$")
+fi
+
+# Submit merge script wich will be launched only if all jobs in prevously submitted job array will be successfully completed.
+sbatch --depend=afterok:${job_id} --wrap="Rscript mymergescript.R"
+```
+
+:frog: _If a dependency condition was never satified, then the dependent job will remain in the SLURM queue with status **DependencyNeverSatisfied**. In this case, you need to cancel such job manually with `scancel` command. Quack quack_
 
 ## Monitoring jobs
 
