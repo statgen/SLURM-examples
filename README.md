@@ -7,6 +7,22 @@ If you want to share your SLURM script, then it is your responsibility to ensure
 
 Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users.
 
+## Table of contents
+
+* [Submitting jobs](#submitting-jobs)
+    * [Simple jobs from command line](#a-simple-job-from-the-command-line)
+    * [Simple jobs from a bash script](#a-simple-job-from-a-bash-script)
+    * [Jobs that use multiple cores (on a single machine)](#a-job-that-use-multiple-cores-(on-a-single-machine))
+    * [Jobs that use multiple nodes (MPI)](#a-job-that-use-multiple-nodes-(ie,-MPI))
+    * [Many jobs](#many-jobs)
+    * [Job dependencies](#job-dependencies)
+* [Monitoring submitted jobs](#monitoring-jobs)
+* [Reviewing completed jobs](#reviewing-completed-jobs)
+* [Canceling jobs](#canceling-jobs)
+* [FAQ](#faq)
+
+    
+
 ## Submitting jobs
 
 ### A simple job from the command line
