@@ -5,7 +5,7 @@ Students, visitors and staff members are welcome to use scripts from this reposi
 
 If you want to share your SLURM script, then it is your responsibility to ensure that the script works and correctly allocates cluster resources.
 
-Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users.
+Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, amount of memory and etc. are specified adequately and will not harm other users.
 
 ## Table of contents
 
