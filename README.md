@@ -9,11 +9,11 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
 
 ## Table of contents
 
-* [Submitting jobs](#submitting-jobs)
-    * [Simple jobs from command line](#a-simple-job-from-the-command-line)
-    * [Simple jobs from a bash script](#a-simple-job-from-a-bash-script)
-    * [Jobs that use multiple cores (on a single machine)](#a-job-that-use-multiple-cores-on-a-single-machine)
-    * [Jobs that use multiple nodes (MPI)](#a-job-that-use-multiple-nodes-ie-mpi)
+* [Submitting a job](#submitting-jobs)
+    * [A simple job from the command line](#a-simple-job-from-the-command-line)
+    * [A simple job from a bash script](#a-simple-job-from-a-bash-script)
+    * [A job that uses multiple cores (on a single machine)](#a-job-that-use-multiple-cores-on-a-single-machine)
+    * [A job that uses multiple nodes (MPI)](#a-job-that-use-multiple-nodes-ie-mpi)
     * [Many jobs](#many-jobs)
     * [Job dependencies](#job-dependencies)
 * [Monitoring submitted jobs](#monitoring-jobs)
