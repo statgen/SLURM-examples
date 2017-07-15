@@ -122,8 +122,9 @@ sbatch --array=0-9 --output=myoutput_%a.txt --wrap="Rscript myscript.R input_fil
 ### Job dependencies
 
 Often we develop pipelines where a particular job must be launched only after previous jobs were successully completed. SLURM provides a way to implement such pipelines with its `--dependency` option:
-- `--dependency=afterok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier will be successfully completed. If `job_id` is a job array, then all jobs in that job array must be successfully completed.
-- `--dependency=afternotok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier will fail. If `job_id` is a job array, then at least one job in that array must be failed. This option may be useful for cleanup step.
+- `--dependency=afterok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier was successfully completed. If `job_id` is a job array, then all jobs in that job array must be successfully completed.
+- `--dependency=afternotok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier failed. If `job_id` is a job array, then at least one job in that array failed. This option may be useful for cleanup step.
+- `--dependency=afterany:<job_id>`. Submitted job wil be launched after job with `job_id` identifier terminated i.e. completed successfully or failed.
 
 Let's consider a pipeline with the following steps: 
 1. split input data into *N* chunks; 
@@ -147,7 +148,7 @@ else
    job=$(echo ${message} | grep -oh "[1-9][0-9]*$")
 fi
 
-# Submit merge script wich will be launched only if all jobs in prevously submitted job array will be successfully completed.
+# Submit merge script wich will be launched only if all jobs in prevously submitted job array are successfully completed.
 sbatch --depend=afterok:${job_id} --wrap="Rscript mymergescript.R"
 ```
 
