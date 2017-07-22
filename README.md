@@ -119,6 +119,11 @@ To keep track of SLURM output files, you can use `%a` when specifiyng `--output`
 sbatch --array=0-9 --output=myoutput_%a.txt --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
 
+SLURM allocates the same amount of memory (specified with `--mem` option) for every job within a job array. For example, the following command allocates 8Gb for each R process inside the job array:
+```
+sbatch --array=0-9 --mem=8000 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
+```
+
 ### Job dependencies
 
 Often we develop pipelines where a particular job must be launched only after previous jobs were successully completed. SLURM provides a way to implement such pipelines with its `--dependency` option:
