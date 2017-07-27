@@ -5,7 +5,23 @@ Students, visitors and staff members are welcome to use scripts from this reposi
 
 If you want to share your SLURM script, then it is your responsibility to ensure that the script works and correctly allocates cluster resources.
 
-Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, cores and etc. are specified adequately and will not harm other users.
+Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test your submission script using a small subset of your input files. Make sure that SLURM arguments for the number of CPUs, amount of memory and etc. are specified adequately and will not harm other users.
+
+## Table of contents
+
+* [Submitting a job](#submitting-jobs)
+    * [A simple job from the command line](#a-simple-job-from-the-command-line)
+    * [A simple job from a bash script](#a-simple-job-from-a-bash-script)
+    * [A job that uses multiple cores (on a single machine)](#a-job-that-use-multiple-cores-on-a-single-machine)
+    * [A job that uses multiple nodes (MPI)](#a-job-that-use-multiple-nodes-ie-mpi)
+    * [Many jobs](#many-jobs)
+    * [Job dependencies](#job-dependencies)
+* [Monitoring submitted jobs](#monitoring-jobs)
+* [Reviewing completed jobs](#reviewing-completed-jobs)
+* [Canceling jobs](#canceling-jobs)
+* [FAQ](#faq)
+
+    
 
 ## Submitting jobs
 
@@ -98,6 +114,50 @@ To specify job array use `--array` as follows:
 sbatch --array=0-9 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
 
+To keep track of SLURM output files, you can use `%a` when specifiyng `--output` argument. Slurm replaces `%a` with the job number in array:
+```
+sbatch --array=0-9 --output=myoutput_%a.txt --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
+```
+
+SLURM allocates the same amount of memory (specified with `--mem` option) for every job within a job array. For example, the following command allocates 8Gb for each R process inside the job array:
+```
+sbatch --array=0-9 --mem=8000 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
+```
+
+### Job dependencies
+
+Often we develop pipelines where a particular job must be launched only after previous jobs were successully completed. SLURM provides a way to implement such pipelines with its `--dependency` option:
+- `--dependency=afterok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier was successfully completed. If `job_id` is a job array, then all jobs in that job array must be successfully completed.
+- `--dependency=afternotok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier failed. If `job_id` is a job array, then at least one job in that array failed. This option may be useful for cleanup step.
+- `--dependency=afterany:<job_id>`. Submitted job wil be launched after job with `job_id` identifier terminated i.e. completed successfully or failed.
+
+Let's consider a pipeline with the following steps: 
+1. split input data into *N* chunks; 
+2. submit SLURM job array with  *N* jobs - one job per data chunk;
+3. merge *N* output files into single final output file. 
+
+In this example, job (3) must be launched only after all jobs in step (2) are successfully finished. 
+You can tell SLURM to automatically run job (3) after jobs in step (2) with the following bash script:
+```
+# On successfull job sumbission, SLURM prints new job identifier to standard output. We can use this job identifier to specify job dependency.
+
+# Submit your job array.  
+slurm_message=$(sbatch --array=0-9 --wrap="Rscript myscript.R chunk_$SLURM_ARRAY_TASK_ID.txt")
+
+# Extract job identifier from SLURM's message.
+if ! echo ${message} | grep -q "[1-9][0-9]*$"; then 
+   echo "Job(s) submission failed."
+   echo ${message}
+   exit 1
+else
+   job=$(echo ${message} | grep -oh "[1-9][0-9]*$")
+fi
+
+# Submit merge script wich will be launched only if all jobs in prevously submitted job array are successfully completed.
+sbatch --depend=afterok:${job_id} --wrap="Rscript mymergescript.R"
+```
+
+:frog: _If a dependency condition was never satified, then the dependent job will remain in the SLURM queue with status **DependencyNeverSatisfied**. In this case, you need to cancel such job manually with `scancel` command. Quack quack_
 
 ## Monitoring jobs
 
@@ -113,6 +173,16 @@ Two most important commands for monitoring your job status are `squeue` and `sco
     - *StdErr*. File where STDERR is written.
     - *StdOut*. File where STDOUT is written.
     - *BatchScript*. The command that was executed. (only for `sbatch --wrap="script.sh args..."`)
+
+## Reviewing completed jobs
+
+If you are curious how long a completed job ran for or how much memory it used, you can look that information with `sacct`. For example
+
+- ``sacct -S `date --date "last month" +%Y-%m-%d` -o "Submit,JobID,JobName,Partition,NCPUS,State,ExitCode,Elapsed,CPUTime,MaxRSS"`` This will pull some basic stats for all the jobs you ran in the past month.
+- `sacct -l -j <job_id>` will dump all the information it has about a particular job
+- `sacct -l -P -j <job_id> | awk -F\| 'FNR==1 { for (i=1; i<=NF; i++) header[i] = $i; next } { for (i=1; i<=NF; i++) print header[i] ": " $i; print "-----"}'` same as above but expands columns to rows 
+
+For other available options, see the [sacct documentation](https://slurm.schedmd.com/sacct.html).
 
 ## Canceling jobs
 
@@ -135,3 +205,7 @@ To cancel a job use `scancel`:
     node = machine = computer
 
     number of threads ≈ number of cores ≈ number of cpus
+
+3. *Where are the docs?*
+
+    [here](https://slurm.schedmd.com/sbatch.html)
