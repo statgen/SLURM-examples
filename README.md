@@ -199,13 +199,17 @@ To cancel a job use `scancel`:
 1. *My job is close to its time limit. How can I extend it?*
 
     Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. The new time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please do this at least one day before the time limit expires).
+    
+2. *What to do if my job is pending (PD) with `(job requeued in held state)` message.*
 
-2. *What are these terms?*
+   Run `scontrol release <job id>`.
+
+3. *What are these terms?*
 
     node = machine = computer
 
     number of threads ≈ number of cores ≈ number of cpus
 
-3. *Where are the docs?*
+4. *Where are the docs?*
 
     [here](https://slurm.schedmd.com/sbatch.html)
