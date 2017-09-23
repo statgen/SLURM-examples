@@ -203,13 +203,17 @@ To cancel a job use `scancel`:
 2. *What to do if my job is pending (PD) with `(job requeued in held state)` message.*
 
    Run `scontrol release <job id>`.
+   
+3. *I want to run some of my jobs before the others.*
 
-3. *What are these terms?*
+   You can achieve this by increasing `nice` value of your less important jobs using `scontrol update jobid=<job id> nice=<value>`. Default `nice` value is 0, jobs with higher `nice` value have lower priority and are executed after jobs with lower `nice` value.
+
+4. *What are these terms?*
 
     node = machine = computer
 
     number of threads ≈ number of cores ≈ number of cpus
 
-4. *Where are the docs?*
+5. *Where are the docs?*
 
     [here](https://slurm.schedmd.com/sbatch.html)
