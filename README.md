@@ -200,7 +200,7 @@ To cancel a job use `scancel`:
 
     Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. The new time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please do this at least one day before the time limit expires).
     
-2. *What to do if my job is pending (PD) with `(job requeued in held state)` message.*
+2. *What to do if my job is pending (PD) with `(job requeued in held state)` or `(JobHeldUser)` message.*
 
    Run `scontrol release <job id>`.
    
