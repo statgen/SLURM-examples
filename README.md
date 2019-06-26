@@ -157,6 +157,12 @@ srun $(head -n $SLURM_ARRAY_TASK_ID jobs.txt | tail -n 1)
 
 Note in the above example `--array=1-3` - the last number corresponds to the total number of jobs (or command lines) in your `jobs.txt` file. The `head -n ... | tail -n 1` part is just a simple trick to read the `$SLURM_ARRAY_TASK_ID`th line from the file (for example, if the task ID is 3, `head` reads the first 3 lines from `jobs.txt`, and then `tail` takes the last line from those 3 lines, which is of course the 3rd line in the file.)
 
+Now you can submit this to the cluster by doing:
+
+```bash
+sbatch submit.sh
+```
+
 ### Job dependencies
 
 Often we develop pipelines where a particular job must be launched only after previous jobs were successully completed. SLURM provides a way to implement such pipelines with its `--dependency` option:
