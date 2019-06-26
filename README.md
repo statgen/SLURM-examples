@@ -21,18 +21,18 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
 * [Canceling jobs](#canceling-jobs)
 * [FAQ](#faq)
 
-    
+
 
 ## Submitting jobs
 
 ### A simple job from the command line
-Just run a command like: 
+Just run a command like:
 ```
 sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"
 ```
 - `--partition=<partition name>` (Default is `nomosix`)
     - Use `scontrol show partitions | less` to see a list of available partitions.
-- `--job-name=<job name>`: A name for the job. (Default is a random number) 
+- `--job-name=<job name>`: A name for the job. (Default is a random number)
 - `--time=<days>-<hours>:<minutes>`: time limit, after which the job will be killed. (Default is 25 hours)
 - `--mem` can use `G` for GB or `M` for MB. (default is `2G`)
 - `--output=<filename>`: where to write STDOUT and STDERR (default is `slurm-<job_id>.out`)
@@ -46,7 +46,7 @@ sbatch -p nomosix -J myjob --mem=4G -t 5-0:0 -o myjob.slurm.log --wrap="Rscript 
 ```
 sbatch --partition=nomosix --job-name=myjob --mem=4G --time=5-0:0 --output=myjob.slurm.log --wrap="Rscript /net/wonderland/home/foo/myscript.R"
 ```
-is equivalent to 
+is equivalent to
 ```
 sbatch myscript.sh
 ```
@@ -61,7 +61,7 @@ if `myscript.sh` contains:
 Rscript /net/wonderland/home/foo/myscript.R
 ```
 
-:frog: _Bash script size must be less than 4MB. If you have a large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it. Quack quack_ 
+:frog: _Bash script size must be less than 4MB. If you have a large script, then: (a) try using short versions of SLURM options, make your bash variable names short, avoid using long file paths and file names; (b) or try to split it._
 
 
 ### A job that use multiple cores (on a single machine)
@@ -73,7 +73,7 @@ Some common single-node multi-threaded jobs:
 - programs that use OpenMP
 - programs that use pthreads
 
-:frog: _If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that. Quack quack_
+:frog: _If a job uses multiple threads, but you don't tell SLURM, SLURM will allocate too many jobs to that node. That will cause problems for all jobs on that node.  Don't do that._
 
 SLURM options for multi-threaded programs:
 - `--cpus-per-task`: the number of cores your job will use (default is 1)
@@ -101,7 +101,7 @@ eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocat
 
 ### Many jobs
 
-The best and recommended way to submit many jobs (>100) is using SLURM's jobs array feature. The job arrays allow managing big number of jobs more effectively and faster. 
+The best and recommended way to submit many jobs (>100) is using SLURM's jobs array feature. The job arrays allow managing big number of jobs more effectively and faster.
 
 To specify job array use `--array` as follows:
 
@@ -109,17 +109,21 @@ To specify job array use `--array` as follows:
     - `--array=0-9`. There are 10 jobs in array. The first job has index 0, and the last job has index 9.
     - `--array=5-8`. There are 4 jobs in array. The first job has index 5, and the last job has index 8.
     - `--array=2,4,6`. There are 3 jobs in array with indices 2, 4 and 6.
+
 2. Inside your script or command, use `$SLURM_ARRAY_TASK_ID` bash variable that stores index to the current job in array. For example, `$SLURM_ARRAY_TASK_ID` can be used to specify input file for job in array (job 0 will process input_file_0.txt, job 1 will process input_file_1.txt and so on):
+
 ```
 sbatch --array=0-9 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
 
 To keep track of SLURM output files, you can use `%a` when specifiyng `--output` argument. Slurm replaces `%a` with the job number in array:
+
 ```
 sbatch --array=0-9 --output=myoutput_%a.txt --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
 
 SLURM allocates the same amount of memory (specified with `--mem` option) for every job within a job array. For example, the following command allocates 8Gb for each R process inside the job array:
+
 ```
 sbatch --array=0-9 --mem=8000 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
@@ -131,21 +135,21 @@ Often we develop pipelines where a particular job must be launched only after pr
 - `--dependency=afternotok:<job_id>`. Submitted job will be launched if and only if job with `job_id` identifier failed. If `job_id` is a job array, then at least one job in that array failed. This option may be useful for cleanup step.
 - `--dependency=afterany:<job_id>`. Submitted job wil be launched after job with `job_id` identifier terminated i.e. completed successfully or failed.
 
-Let's consider a pipeline with the following steps: 
-1. split input data into *N* chunks; 
+Let's consider a pipeline with the following steps:
+1. split input data into *N* chunks;
 2. submit SLURM job array with  *N* jobs - one job per data chunk;
-3. merge *N* output files into single final output file. 
+3. merge *N* output files into single final output file.
 
-In this example, job (3) must be launched only after all jobs in step (2) are successfully finished. 
+In this example, job (3) must be launched only after all jobs in step (2) are successfully finished.
 You can tell SLURM to automatically run job (3) after jobs in step (2) with the following bash script:
 ```
 # On successfull job sumbission, SLURM prints new job identifier to standard output. We can use this job identifier to specify job dependency.
 
-# Submit your job array.  
+# Submit your job array.
 slurm_message=$(sbatch --array=0-9 --wrap="Rscript myscript.R chunk_$SLURM_ARRAY_TASK_ID.txt")
 
 # Extract job identifier from SLURM's message.
-if ! echo ${message} | grep -q "[1-9][0-9]*$"; then 
+if ! echo ${message} | grep -q "[1-9][0-9]*$"; then
    echo "Job(s) submission failed."
    echo ${message}
    exit 1
@@ -157,7 +161,7 @@ fi
 sbatch --depend=afterok:${job_id} --wrap="Rscript mymergescript.R"
 ```
 
-:frog: _If a dependency condition was never satified, then the dependent job will remain in the SLURM queue with status **DependencyNeverSatisfied**. In this case, you need to cancel such job manually with `scancel` command. Quack quack_
+:frog: _If a dependency condition was never satified, then the dependent job will remain in the SLURM queue with status **DependencyNeverSatisfied**. In this case, you need to cancel such job manually with `scancel` command._
 
 ## Monitoring jobs
 
@@ -180,7 +184,7 @@ If you are curious how long a completed job ran for or how much memory it used, 
 
 - ``sacct -S `date --date "last month" +%Y-%m-%d` -o "Submit,JobID,JobName,Partition,NCPUS,State,ExitCode,Elapsed,CPUTime,MaxRSS"`` This will pull some basic stats for all the jobs you ran in the past month.
 - `sacct -l -j <job_id>` will dump all the information it has about a particular job
-- `sacct -l -P -j <job_id> | awk -F\| 'FNR==1 { for (i=1; i<=NF; i++) header[i] = $i; next } { for (i=1; i<=NF; i++) print header[i] ": " $i; print "-----"}'` same as above but expands columns to rows 
+- `sacct -l -P -j <job_id> | awk -F\| 'FNR==1 { for (i=1; i<=NF; i++) header[i] = $i; next } { for (i=1; i<=NF; i++) print header[i] ": " $i; print "-----"}'` same as above but expands columns to rows
 
 For other available options, see the [sacct documentation](https://slurm.schedmd.com/sacct.html).
 
@@ -199,11 +203,11 @@ To cancel a job use `scancel`:
 1. *My job is close to its time limit. How can I extend it?*
 
     Run `scontrol update jobid=<job id> TimeLimit=<days>-<hours>:<minutes>`. The new time limit must be greater than the current! Otherwise, SLURM will cancel your job immediately. If you don't have permission to run this command, then contact the administrator (in this case, please do this at least one day before the time limit expires).
-    
+
 2. *What to do if my job is pending (PD) with `(job requeued in held state)` or `(JobHeldUser)` message.*
 
    Run `scontrol release <job id>`.
-   
+
 3. *I want to run some of my jobs before the others.*
 
    You can achieve this by increasing `nice` value of your less important jobs using `scontrol update jobid=<job id> nice=<value>`. Default `nice` value is 0, jobs with higher `nice` value have lower priority and are executed after jobs with lower `nice` value.
