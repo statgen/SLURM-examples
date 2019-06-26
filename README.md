@@ -17,6 +17,7 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
     * [Many jobs](#many-jobs)
       * [Simple array jobs](#simple-job-arrays)
       * [File of commands](#file-of-commands)
+      * [Snakemake](#snakemake)
     * [Job dependencies](#job-dependencies)
 * [Monitoring submitted jobs](#monitoring-jobs)
 * [Reviewing completed jobs](#reviewing-completed-jobs)
@@ -164,6 +165,18 @@ Now you can submit this to the cluster by doing:
 ```bash
 sbatch submit.sh
 ```
+
+#### Snakemake
+
+You can also use a workflow/pipeline system such as [Snakemake](https://snakemake.readthedocs.io/en/stable/) to submit your jobs to the cluster. This can have many advantages over manual job submission:
+
+* Makes your work more reproducible
+* Easier for others to follow what you did
+* Automatically restart failed jobs
+
+An example of using Snakemake to submit cluster jobs can be found in a number of places:
+
+* [CSG Tech Talk - Snakemake Tutorial](https://github.com/welchr/csg-snakemake/tree/master/example-tutorial)
 
 ### Job dependencies
 
