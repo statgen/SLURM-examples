@@ -101,6 +101,8 @@ eg, `sbatch --ntasks=8 --cpus-per-task=1 --mem-per-cpu=4G myjob.sh` will allocat
 
 ### Many jobs
 
+#### Simple job arrays
+
 The best and recommended way to submit many jobs (>100) is using SLURM's jobs array feature. The job arrays allow managing big number of jobs more effectively and faster.
 
 To specify job array use `--array` as follows:
@@ -127,6 +129,33 @@ SLURM allocates the same amount of memory (specified with `--mem` option) for ev
 ```
 sbatch --array=0-9 --mem=8000 --wrap="Rscript myscript.R input_file_$SLURM_ARRAY_TASK_ID.txt"
 ```
+
+#### File of commands
+
+Sometimes, it may be easier to write out a file with a list of command lines to execute, one per line. For example, your file could look like:
+
+`jobs.txt`:
+```bash
+locuszoom --refsnp rs1
+locuszoom --refsnp rs2
+locuszoom --refsnp rs3
+```
+
+Now you can write a job submission script that looks like:
+
+`submit.sh`:
+```bash
+#!/bin/bash
+
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=500
+#SBATCH --partition=nomosix
+#SBATCH --array=1-3
+
+srun $(head -n $SLURM_ARRAY_TASK_ID jobs.txt | tail -n 1)
+```
+
+Note in the above example `--array=1-3` - the last number corresponds to the total number of jobs (or command lines) in your `jobs.txt` file. The `head -n ... | tail -n 1` part is just a simple trick to read the `$SLURM_ARRAY_TASK_ID`th line from the file (for example, if the task ID is 3, `head` reads the first 3 lines from `jobs.txt`, and then `tail` takes the last line from those 3 lines, which is of course the 3rd line in the file.)
 
 ### Job dependencies
 
