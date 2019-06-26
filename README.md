@@ -15,6 +15,8 @@ Before allocating hundreds of jobs to the SLURM queue, it is a good idea to test
     * [A job that uses multiple cores (on a single machine)](#a-job-that-use-multiple-cores-on-a-single-machine)
     * [A job that uses multiple nodes (MPI)](#a-job-that-use-multiple-nodes-ie-mpi)
     * [Many jobs](#many-jobs)
+      * [Simple array jobs](#simple-job-arrays)
+      * [File of commands](#file-of-commands)
     * [Job dependencies](#job-dependencies)
 * [Monitoring submitted jobs](#monitoring-jobs)
 * [Reviewing completed jobs](#reviewing-completed-jobs)
